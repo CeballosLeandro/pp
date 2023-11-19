@@ -1,0 +1,125 @@
+$_SESSION['message'] = 'Objeto dado de baja correctamente';
+$_SESSION['message_type'] = 'danger';
+header("Location: forms/delmodule.php");
+
+addform.php
+<div class="col-md-4">
+        <?php if(isset($_SESSION['message'])){?>
+            <div class="alert alert-<?= $_SESSION['message_type']?> alert-dismissible fade show" role="alert">
+                <?= $_SESSION['message']?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php session_unset();}?>
+            
+//delmodule.php
+
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-4">
+        <?php if(isset($_SESSION['message'])){?>
+            <div class="alert alert-<?= $_SESSION['message_type']?> alert-dismissible fade show" role="alert">
+                <?= $_SESSION['message']?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php session_unset();}?>
+            
+        </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Especialiad</th>
+                        <th>Ubicación</th>
+                        <th>Sector</th>
+                        <th>Descripción</th>
+                        <th>Historia</th>
+                        <th>Fecha Alta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                        $query = "SELECT id,nombre, especialidad, ubicacion, sector, descripcion, descripcionh, fechaIngreso FROM objeto";
+                        $result_add = mysqli_query($conn, $query);
+                        
+                        while($row = mysqli_fetch_array($result_add)) {?>
+                        <tr>
+                            <td><?php echo $row['id']?></td>
+                            <td><?php echo $row['nombre']?></td>
+                            <td><?php echo $row['especialidad']?></td>
+                            <td><?php echo $row['ubicacion']?></td>
+                            <td><?php echo $row['sector']?></td>
+                            <td><?php echo $row['descripcion']?></td>
+                            <td><?php echo $row['descripcionh']?></td>
+                            <td><?php echo $row['fechaIngreso']?></td>
+                            <td>
+                                <a href="../delete.php?id=<?php echo $row[0]?>" class="btn btn-danger">
+                                    <i>Dar de Baja</i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php }?>            
+                </tbody>
+            </table>
+        <div class="col-md-8">
+
+        </div>
+    </div>
+</div>
+
+
+//Alerta que no funca en el login
+
+<?php if($is_invalid): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        Datos Inválidos. Verifica tu correo y contraseña.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+//Query vieja en oldposicion.php
+$historialQuery = "SELECT o.id, o.nombre, o.especialidad, o.posicion, o.descripcion, o.descripcionh, o.fechaIngreso, h.fechaBaja, h.motivobaja, h.lugar
+                    FROM objeto o
+                    LEFT JOIN historial h ON o.id = h.idobjeto
+                    WHERE o.id = $id";
+
+// Consulta SQL para obtener la información actual del objeto
+    // $objetoQuery = "SELECT * FROM objeto WHERE id = $id";
+    // $objetoResult = mysqli_query($conn, $objetoQuery);
+
+// if ($objetoResult && $historialResult) {
+    //     // Obtener el resultado como un array asociativo
+    //     $objetoRow = mysqli_fetch_assoc($objetoResult);
+    //     $historialRow = mysqli_fetch_assoc($historialResult);
+
+    //     // Obtener la información necesaria
+    //     $fechaB = $historialRow['fechaBaja'];
+    //     $pos = $historialRow['posicion'];
+    //     $why = $historialRow['motivobaja'];
+    //     $lugar = $historialRow['lugar'];
+
+    //     // Realizar el UPDATE en la tabla objeto
+    //     $updateObjetoQuery = "UPDATE objeto SET estado = 'Activo' WHERE id = $id";
+    //     mysqli_query($conn, $updateObjetoQuery);
+
+    //     // Realizar el INSERT en la tabla historial
+    //     $insertHistorialQuery = "INSERT INTO historial (idobjeto, fechaBaja, fechaAlta, posicion, motivobaja, lugar) 
+    //                             VALUES ('$id', '$fechaB', CURRENT_TIMESTAMP, '$pos', '$why', '$lugar')";
+    //     mysqli_query($conn, $insertHistorialQuery);
+
+    //     echo '
+    //         <script>
+    //             alert("Objeto movido a posición anterior correctamente!");
+    //             window.location = "forms/editform.php";
+    //         </script>';
+    //     exit;
+
+    // } else {
+    //     echo '
+    //     <script>
+    //         alert("Error en la operación de actualización!");
+    //         window.location = "forms/editform.php";
+    //     </script>';
+    //     exit;
+    // }
