@@ -53,7 +53,7 @@ if (isset($_GET['id'])) {
             </div>
         </div>
         <br>
-        <a href="editform.php" class="btn btn-primary btn-lg mt-3">Volver</a>
+        <a href="objetos.php" class="btn btn-primary btn-lg mt-3">Volver</a>
     </div>
 
     

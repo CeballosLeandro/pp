@@ -34,10 +34,7 @@ if ($result) {
             <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="../../login-modules/registro.php">Registrarse</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="../../login-modules/login.php">Iniciar Sesión</a>
+                <a class="nav-link" aria-current="page" href="../../index.php">Inicio</a>
                 </li>
             </ul>
             </div>

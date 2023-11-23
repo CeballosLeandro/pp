@@ -87,7 +87,7 @@
                         <img src="' . $imagen_url . '" class="card-img-top" alt="' . $row['nombre'] . '">
                         <div class="card-body">
                             <h5 class="card-title">' . $row['nombre'] . '</h5>
-                            <a href="objeto.php?id=' . $row['id'] . '" class="btn btn-primary">Ver Detalles</a>
+                            <a href="objetoguest.php?id=' . $row['id'] . '" class="btn btn-primary">Ver Detalles</a>
                         </div>
                     </div>
                 </div>';

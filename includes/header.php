@@ -14,9 +14,9 @@
 
     <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="../indexmain.php">
+        <a class="navbar-brand" href="../index.php">
         <img src="../crud-modules/forms/assets/logokrause.png" alt="Logo" width="50" height="44" class="d-inline-block align-text-top">
-        MuseoTech
+        Home
         </a>
     </div>
     </nav>

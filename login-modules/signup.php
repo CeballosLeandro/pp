@@ -1,50 +1,73 @@
-<?php 
-    include('../crud-modules/db.php');
+<?php
+include('../crud-modules/db.php');
 
-    if(isset($_POST['signup'])){
-        $user = $_POST['username'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+if (isset($_POST['signup'])) {
+    $user = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-        if(strlen($_POST['password']) < 4){
-            // die("La contraseña debe tener 8 caracteres como mínimo");
-            echo'
-                <script>
-                    alert("La contraseña debe tener 4 caracteres como mínimo");
-                    window.location = "registro.php"
-                </script>
-            ';
-        }
-        if( ! preg_match("/[a-z]/i", $_POST["password"])){
-            die("La contraseña debe contener al menos una letra");
-        }
-        if( ! preg_match("/[0-9]/i", $_POST["password"])){
-            die("La contraseña debe contener al menos un número");
-        }
-        if($_POST['password'] !== $_POST['confirm_password']){
-            die("Las contraseñas deben coincidir");
-        }
+    // Verificar si el correo ya está registrado
+    $checkEmailQuery = "SELECT id FROM usuario WHERE mail = ?";
+    $checkStmt = $conn->prepare($checkEmailQuery);
+    $checkStmt->bind_param("s", $email);
+    $checkStmt->execute();
+    $checkStmt->store_result();
 
-    $sql = "INSERT INTO usuario (nombre,mail,password) VALUES (?,?,?)";
-    $stmt = $conn->stmt_init();
-    if( ! $stmt->prepare($sql)){
+    if ($checkStmt->num_rows > 0) {
+        echo '
+            <script>
+                alert("Este correo ya está registrado");
+                window.location = "registro.php";
+            </script>
+        ';
+        exit;
+    }
+
+    // Verificar requisitos de contraseña
+    if (strlen($password) < 4 || !preg_match("/[a-z]/i", $password) || !preg_match("/[0-9]/i", $password)) {
+        echo '
+            <script>
+                alert("La contraseña debe tener al menos 4 caracteres, una letra y un número");
+                window.location = "registro.php";
+            </script>
+        ';
+        exit;
+    }
+
+    // Verificar si las contraseñas coinciden
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+        echo '
+            <script>
+                alert("Las contraseñas no coinciden");
+                window.location = "registro.php";
+            </script>
+        ';
+        exit;
+    }
+
+    // Hash de la contraseña
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insertar en la base de datos
+    $sql = "INSERT INTO usuario (nombre, mail, password) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
         die("SQL Error: " . $conn->error);
     }
-    $stmt->bind_param("sss",
-                       $_POST['username'],
-                       $_POST['email'],
-                       $_POST['password']);
 
-    if($stmt->execute()){
-        header("Location: login.php");
+    $stmt->bind_param("sss", $user, $email, $hashedPassword);
+
+    if ($stmt->execute()) {
+        echo '
+            <script>
+                alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                window.location = "login.php";
+            </script>
+        ';
         exit;
     } else {
-        if($conn->errno === 1062) {
-            die("Mail ya registrado");
-        }
-        die($conn->error . " " . $conn->errno);
+        die("Error en la ejecución de la consulta: " . $stmt->error);
     }
 }
- 
-
 ?>

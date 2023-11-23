@@ -1,36 +1,33 @@
 <?php
-   $is_invalid = false;
+$is_invalid = false;
 
-   if ($_SERVER["REQUEST_METHOD"] === "POST") {
-       $mysqli = require __DIR__ . "../../crud-modules/db.php";
-       $sql = sprintf("SELECT * FROM usuario WHERE mail = '%s'", $mysqli->real_escape_string($_POST['email']));
-       $result = $mysqli->query($sql);
-       $user = $result->fetch_assoc();
-   
-       if ($user && $_POST['password'] === $user['password']) {
-           // Passwords match, so start the session and set user information
-           session_start();
-           session_regenerate_id();
-           $_SESSION['user_id'] = $user['id'];
-   
-        //    Esto lo puse porque no funcaba desde el header normal, por ende use una posicion absoluta
-        //    $url = "http://localhost/pp_crud/crud-modules/dashboard.php";
-        //    header("Location: " . $url);
-            header("Location: ../crud-modules/dashboard.php");
-           exit;
-       } else {
-           // Passwords do not match, or user not found
-           echo '
-                <script>
-                    alert("Datos Inválidos. Verifica tu correo y contraseña.");
-                    window.location = "login.php";
-                </script>    
-           ';
-           exit;
-       }
-       
-   }
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $mysqli = require __DIR__ . "../../crud-modules/db.php";
+    $email = $mysqli->real_escape_string($_POST['email']);
+    $sql = sprintf("SELECT * FROM usuario WHERE mail = '%s'", $email);
+    $result = $mysqli->query($sql);
+    $user = $result->fetch_assoc();
 
+    if ($user && password_verify($_POST['password'], $user['password'])) {
+        // Passwords match, so start the session and set user information
+        session_start();
+        session_regenerate_id();
+        $_SESSION['user_id'] = $user['id'];
+
+        // Redireccionar al dashboard después del inicio de sesión
+        header("Location: ../crud-modules/dashboard.php");
+        exit;
+    } else {
+        // Passwords do not match, or user not found
+        echo '
+            <script>
+                alert("Datos Inválidos. Verifica tu correo y contraseña.");
+                window.location = "login.php";
+            </script>    
+        ';
+        exit;
+    }
+}
 ?>
 
 <?php include('../includes/header.php')?>
@@ -69,6 +66,8 @@
                         </form>
                         <div class="mt-3">
                             No tiene cuenta?<a href="registro.php" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"> Registrarse</a>
+                            <br>
+                            ¿Olvidaste tu contraseña? <a href="recovery.php" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Recuperar Contraseña</a>
                         </div>
                     </div>
                 </div>
